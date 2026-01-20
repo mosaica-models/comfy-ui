@@ -651,9 +651,8 @@ class ModelPatcher:
             self.pinned.remove(key)
 
     def unpin_all_weights(self):
-        if hasattr(self, 'pinned'):
-            for key in list(self.pinned):
-                self.unpin_weight(key)
+        for key in list(self.pinned):
+            self.unpin_weight(key)
 
     def _load_list(self):
         loading = []
@@ -1357,7 +1356,6 @@ class ModelPatcher:
         self.clear_cached_hook_weights()
 
     def __del__(self):
-        if hasattr(self, 'pinned'):
-            self.unpin_all_weights()
-            self.detach(unpatch_all=False)
+        self.unpin_all_weights()
+        self.detach(unpatch_all=False)
 

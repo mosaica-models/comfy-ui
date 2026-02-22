@@ -43,7 +43,6 @@ class SupportedOpenAIModel(str, Enum):
     o1 = "o1"
     o3 = "o3"
     o1_pro = "o1-pro"
-    gpt_4o = "gpt-4o"
     gpt_4_1 = "gpt-4.1"
     gpt_4_1_mini = "gpt-4.1-mini"
     gpt_4_1_nano = "gpt-4.1-nano"
@@ -364,9 +363,9 @@ class OpenAIGPTImage1(IO.ComfyNode):
     def define_schema(cls):
         return IO.Schema(
             node_id="OpenAIGPTImage1",
-            display_name="OpenAI GPT Image 1",
+            display_name="OpenAI GPT Image 1.5",
             category="api node/image/OpenAI",
-            description="Generates images synchronously via OpenAI's GPT Image 1 endpoint.",
+            description="Generates images synchronously via OpenAI's GPT Image endpoint.",
             inputs=[
                 IO.String.Input(
                     "prompt",
@@ -429,6 +428,7 @@ class OpenAIGPTImage1(IO.ComfyNode):
                 IO.Combo.Input(
                     "model",
                     options=["gpt-image-1", "gpt-image-1.5"],
+                    default="gpt-image-1.5",
                     optional=True,
                 ),
             ],
@@ -575,6 +575,7 @@ class OpenAIChatNode(IO.ComfyNode):
             node_id="OpenAIChatNode",
             display_name="OpenAI ChatGPT",
             category="api node/text/OpenAI",
+            essentials_category="Text Generation",
             description="Generate text responses from an OpenAI model.",
             inputs=[
                 IO.String.Input(
@@ -587,6 +588,7 @@ class OpenAIChatNode(IO.ComfyNode):
                     "persist_context",
                     default=False,
                     tooltip="This parameter is deprecated and has no effect.",
+                    advanced=True,
                 ),
                 IO.Combo.Input(
                     "model",
@@ -646,11 +648,6 @@ class OpenAIChatNode(IO.ComfyNode):
                   : $contains($m, "o3") ? {
                     "type": "list_usd",
                     "usd": [0.01, 0.04],
-                    "format": { "approximate": true, "separator": "-", "suffix": " per 1K tokens" }
-                  }
-                  : $contains($m, "gpt-4o") ? {
-                    "type": "list_usd",
-                    "usd": [0.0025, 0.01],
                     "format": { "approximate": true, "separator": "-", "suffix": " per 1K tokens" }
                   }
                   : $contains($m, "gpt-4.1-nano") ? {
@@ -861,6 +858,7 @@ class OpenAIChatConfig(IO.ComfyNode):
                     options=["auto", "disabled"],
                     default="auto",
                     tooltip="The truncation strategy to use for the model response. auto: If the context of this response and previous ones exceeds the model's context window size, the model will truncate the response to fit the context window by dropping input items in the middle of the conversation.disabled: If a model response will exceed the context window size for a model, the request will fail with a 400 error",
+                    advanced=True,
                 ),
                 IO.Int.Input(
                     "max_output_tokens",
@@ -869,6 +867,7 @@ class OpenAIChatConfig(IO.ComfyNode):
                     max=16384,
                     tooltip="An upper bound for the number of tokens that can be generated for a response, including visible output tokens",
                     optional=True,
+                    advanced=True,
                 ),
                 IO.String.Input(
                     "instructions",
